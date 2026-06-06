@@ -28,6 +28,28 @@
             <br><span class="text-sm font-semibold text-blue-500 mt-2 block">काम प्रगति पर है...</span>
         </p>
 
+<!-- नया और बेहतर वेटलिस्ट फ़ॉर्म (बिना कटने वाली सेटिंग के साथ) -->
+<div class="mt-6 px-4">
+  <!-- मुख्य निर्देश को इनपुट के ऊपर रखा ताकि मोबाइल पर भी पूरा दिखे -->
+  <label for="userEmail" class="block text-gray-700 font-medium mb-3 text-sm sm:text-base max-w-md mx-auto text-center">
+    जिस ईमेल आईडी से आप अपनी RTI फाइल करते हैं, उसे यहाँ दर्ज करें:
+  </label>
+  
+  <form id="waitlistForm" class="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
+    <input type="email" id="userEmail" placeholder="name@example.com" required 
+           class="px-4 py-2.5 rounded-lg border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-72">
+    <button type="submit" id="submitBtn"
+            class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-lg transition duration-300 whitespace-nowrap">
+      जल्दी एक्सेस पाएं 🚀
+    </button>
+  </form>
+  
+  <!-- सफलता या एरर मैसेज -->
+  <p id="msg" class="mt-3 text-sm font-semibold hidden text-center"></p>
+</div>
+
+<script type="module" src="script.js"></script>
+
         <!-- लोडर एनिमेशन (दिखने में प्रो लगता है) -->
         <div class="flex justify-center items-center space-x-2">
             <div class="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
