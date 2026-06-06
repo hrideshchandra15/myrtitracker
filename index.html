@@ -27,34 +27,39 @@
             उत्तर प्रदेश और भारत के अन्य राज्यों के लिए पहला ऑटोमैटिक आरटीआई और अपील मैनेजर बन रहा है। 
             <br><span class="text-sm font-semibold text-blue-500 mt-2 block">काम प्रगति पर है...</span>
         </p>
-
 <!-- नया और बेहतर वेटलिस्ट फ़ॉर्म (बिना कटने वाली सेटिंग के साथ) -->
-<div class="mt-6 px-4">
-  <!-- मुख्य निर्देश को इनपुट के ऊपर रखा ताकि मोबाइल पर भी पूरा दिखे -->
-  <label for="userEmail" class="block text-gray-700 font-medium mb-3 text-sm sm:text-base max-w-md mx-auto text-center">
-    जिस ईमेल आईडी से आप अपनी RTI फाइल करते हैं, उसे यहाँ दर्ज करें:
-  </label>
+<div class="mt-6 px-4 w-full">
   
-  <form id="waitlistForm" class="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
-    <input type="email" id="userEmail" placeholder="name@example.com" required 
-           class="px-4 py-2.5 rounded-lg border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-72">
-  <!-- इनपुट बॉक्स के ठीक ऊपर का नया आकर्षक टेक्स्ट -->
-<p class="text-sm text-gray-600 text-center mb-4">
-  अभी रजिस्टर करें और ऐप लॉन्च होने पर पाएं 3 महीने का प्रीमियम एक्सेस बिल्कुल फ्री! 🔥
-</p>
+  <!-- 1. आकर्षक ऑफर टेक्स्ट - इसे हमने फॉर्म से बाहर सबसे ऊपर कर दिया है ताकि ये किसी को डिस्टर्ब न करे -->
+  <p class="text-sm text-gray-600 text-center mb-4 block w-full leading-relaxed">
+    अभी रजिस्टर करें और ऐप लॉन्च होने पर पाएं 3 महीने का प्रीमियम एक्सेस बिल्कुल फ्री! 🔥
+  </p>
 
-<!-- फॉर्म का इनपुट और नया ऑफर वाला बटन -->
-<form id="waitlistForm" class="space-y-3">
-  <input type="email" id="userEmail" placeholder="name@example.com" required class="..." />
-  
-  <button type="submit" id="submitBtn" class="...">
-    अपना फ्री प्रीमियम पास लें 🎟️
-  </button>
-</form>
+  <!-- 2. असली फ़ॉर्म कंटेनर (जो सिर्फ इनपुट बॉक्स और बटन को संभालता है) -->
+  <form id="waitlistForm" class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto">
+    
+    <!-- ईमेल इनपुट बॉक्स -->
+    <input type="email" id="userEmail" placeholder="name@example.com" required 
+           class="w-full sm:flex-1 px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base shadow-sm" />
+    
+    <!-- सबमिट बटन (whitespace-nowrap की वजह से इसका टेक्स्ट कभी नहीं टूटेगा) -->
+    <button type="submit" id="submitBtn" 
+            class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2.5 rounded-xl transition duration-200 whitespace-nowrap shadow-sm">
+      अपना फ्री प्रीमियम पास लें 🎟️
+    </button>
+
   </form>
-  
-  <!-- सफलता या एरर मैसेज -->
-  <p id="msg" class="mt-3 text-sm font-semibold hidden text-center"></p>
+
+  <!-- 3. सफलता / डुप्लीकेट अलर्ट मैसेज दिखाने के लिए सुरक्षित जगह -->
+  <div id="msg" class="mt-3 text-center text-sm font-semibold hidden"></div>
+
+  <!-- 4. आपके नीचे वाले सुंदर तीन डॉट्स (पेज इंडिकेटर) जो अब एकदम सेंटर में नीचे दिखेंगे -->
+  <div class="flex justify-center gap-1.5 mt-5">
+    <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+    <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+    <span class="w-2.5 h-2.5 rounded-full bg-slate-800"></span>
+  </div>
+
 </div>
 
 <script type="module" src="script.js"></script>
