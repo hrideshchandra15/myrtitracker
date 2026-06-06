@@ -56,13 +56,14 @@ form.addEventListener('submit', async (e) => {
     msg.classList.remove('hidden');
     form.reset(); // केवल सफलता पर ही फॉर्म का इनपुट बॉक्स साफ होगा
 
-  } catch (error) {
+} catch (error) {
     console.error("Firebase Error: ", error);
     msg.innerText = "ओह! कुछ गड़बड़ हुई। कृपया दोबारा प्रयास करें।";
     msg.className = "mt-3 text-sm font-semibold text-red-600 text-center block";
     msg.classList.remove('hidden');
   } finally {
+    // 🎯 यहाँ बटन का नाम नए ऑफर के हिसाब से बदल दिया गया है
     btn.disabled = false;
-    btn.innerText = "जल्दी एक्सेस पाएं 🚀";
+    btn.innerText = "अपना फ्री प्रीमियम पास लें 🎟️"; 
   }
 });
