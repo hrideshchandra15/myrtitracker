@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-// हमने doc, getDoc, और setDoc का उपयोग किया है
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -23,27 +22,30 @@ const btn = document.getElementById('submitBtn');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   
-  const emailValue = input.value.trim().toLowerCase(); // ईमेल को लोअरकेस में सिंक किया
+  // 🔄 1. बटन दबाते ही तुरंत पुराना मैसेज साफ करें ताकि यूज़र को भ्रम न हो
+  msg.innerText = "";
+  msg.classList.add('hidden');
+
+  const emailValue = input.value.trim().toLowerCase();
   if(!emailValue) return;
 
   btn.disabled = true;
   btn.innerText = "जमा हो रहा है...";
 
   try {
-    // 🔍 ईमेल आईडी को ही सीधा Document Reference बना दिया
     const docRef = doc(db, "waitlist", emailValue);
     const docSnap = await getDoc(docRef);
 
-    // 🛑 अगर इस ईमेल नाम का डॉक्यूमेंट पहले से मौजूद है
+    // 🛑 2. अगर ईमेल पहले से मौजूद है
     if (docSnap.exists()) {
       msg.innerText = "यह ईमेल आईडी पहले से दर्ज है! 😎";
       msg.className = "mt-3 text-sm font-semibold text-orange-500 text-center block";
       msg.classList.remove('hidden');
-      form.reset();
+      // यहाँ फॉर्म रिसेट नहीं करेंगे ताकि यूज़र को दिखे कि उसने क्या टाइप किया था और वह उसे सुधार सके
       return;
     }
 
-    // 📝 अगर नया ईमेल है, तो ईमेल को ही ID बनाकर डेटा सेव करें
+    // 📝 3. अगर नया ईमेल है, तो डेटाबेस में जोड़ें
     await setDoc(docRef, {
       email: emailValue,
       timestamp: serverTimestamp()
@@ -52,10 +54,10 @@ form.addEventListener('submit', async (e) => {
     msg.innerText = "बधाई हो! आपकी RTI ईमेल आईडी वीआईपी वेटलिस्ट में दर्ज हो गई है। 🎉";
     msg.className = "mt-3 text-sm font-semibold text-green-600 text-center block";
     msg.classList.remove('hidden');
-    form.reset();
+    form.reset(); // केवल सफलता पर ही फॉर्म का इनपुट बॉक्स साफ होगा
 
   } catch (error) {
-    console.error("Error configuration: ", error);
+    console.error("Firebase Error: ", error);
     msg.innerText = "ओह! कुछ गड़बड़ हुई। कृपया दोबारा प्रयास करें।";
     msg.className = "mt-3 text-sm font-semibold text-red-600 text-center block";
     msg.classList.remove('hidden');
