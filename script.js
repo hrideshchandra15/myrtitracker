@@ -1,7 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// हमने यहाँ query, where, और getDocs को भी इम्पोर्ट कर लिया है
+import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// फ़ायरबेस कॉन्फ़िगरेशन आपकी असली चाबी के साथ
+// आपका फ़ायरबेस कॉन्फ़िगरेशन
 const firebaseConfig = {
   apiKey: "AIzaSyBWGy8wfBYn9v6uZ3PK_VdaQ4Mo-KbDDvs", 
   authDomain: "rti-appeal-tracker-proje-8129e.firebaseapp.com",
@@ -16,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const form = document.getElementById('waitlistForm');
-const input = document.getElementById('userEmail'); // नई आईडी के साथ सिंक किया
+const input = document.getElementById('userEmail');
 const msg = document.getElementById('msg');
 const btn = document.getElementById('submitBtn');
 
@@ -30,21 +31,34 @@ form.addEventListener('submit', async (e) => {
   btn.innerText = "जमा हो रहा है...";
 
   try {
-    // अब डेटा 'email' फील्ड के नाम से स्टोर होगा
+    // 🔍 1. डेटाबेस में पहले से मौजूद ईमेल चेक करने के लिए क्वेरी बनाएं
+    const q = query(collection(db, "waitlist"), where("email", "==", emailValue));
+    const querySnapshot = await getDocs(q);
+
+    // 🛑 2. अगर ईमेल पहले से मौजूद (Duplicate) है
+    if (!querySnapshot.empty) {
+      msg.innerText = "यह ईमेल आईडी पहले से दर्ज है! 😎";
+      msg.className = "mt-3 text-sm font-semibold text-orange-500 text-center block";
+      msg.classList.remove('hidden');
+      form.reset();
+      return; // यहीं से कोड रुक जाएगा, आगे नया डेटा ऐड नहीं होगा
+    }
+
+    // 📝 3. अगर ईमेल नया है, तो ही डेटाबेस में जोड़ें
     await addDoc(collection(db, "waitlist"), {
       email: emailValue,
       timestamp: serverTimestamp()
     });
 
     msg.innerText = "बधाई हो! आपकी RTI ईमेल आईडी वीआईपी वेटलिस्ट में दर्ज हो गई है। 🎉";
-    msg.className = "mt-3 text-sm font-semibold text-green-600";
+    msg.className = "mt-3 text-sm font-semibold text-green-600 text-center block";
     msg.classList.remove('hidden');
     form.reset();
 
   } catch (error) {
-    console.error("Error adding document: ", error);
+    console.error("Error checking or adding document: ", error);
     msg.innerText = "ओह! कुछ गड़बड़ हुई। कृपया दोबारा प्रयास करें।";
-    msg.className = "mt-3 text-sm font-semibold text-red-600";
+    msg.className = "mt-3 text-sm font-semibold text-red-600 text-center block";
     msg.classList.remove('hidden');
   } finally {
     btn.disabled = false;
