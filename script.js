@@ -1,8 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-// हमने यहाँ query, where, और getDocs को भी इम्पोर्ट कर लिया है
-import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// हमने doc, getDoc, और setDoc का उपयोग किया है
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// आपका फ़ायरबेस कॉन्फ़िगरेशन
 const firebaseConfig = {
   apiKey: "AIzaSyBWGy8wfBYn9v6uZ3PK_VdaQ4Mo-KbDDvs", 
   authDomain: "rti-appeal-tracker-proje-8129e.firebaseapp.com",
@@ -24,28 +23,28 @@ const btn = document.getElementById('submitBtn');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   
-  const emailValue = input.value.trim();
+  const emailValue = input.value.trim().toLowerCase(); // ईमेल को लोअरकेस में सिंक किया
   if(!emailValue) return;
 
   btn.disabled = true;
   btn.innerText = "जमा हो रहा है...";
 
   try {
-    // 🔍 1. डेटाबेस में पहले से मौजूद ईमेल चेक करने के लिए क्वेरी बनाएं
-    const q = query(collection(db, "waitlist"), where("email", "==", emailValue));
-    const querySnapshot = await getDocs(q);
+    // 🔍 ईमेल आईडी को ही सीधा Document Reference बना दिया
+    const docRef = doc(db, "waitlist", emailValue);
+    const docSnap = await getDoc(docRef);
 
-    // 🛑 2. अगर ईमेल पहले से मौजूद (Duplicate) है
-    if (!querySnapshot.empty) {
+    // 🛑 अगर इस ईमेल नाम का डॉक्यूमेंट पहले से मौजूद है
+    if (docSnap.exists()) {
       msg.innerText = "यह ईमेल आईडी पहले से दर्ज है! 😎";
       msg.className = "mt-3 text-sm font-semibold text-orange-500 text-center block";
       msg.classList.remove('hidden');
       form.reset();
-      return; // यहीं से कोड रुक जाएगा, आगे नया डेटा ऐड नहीं होगा
+      return;
     }
 
-    // 📝 3. अगर ईमेल नया है, तो ही डेटाबेस में जोड़ें
-    await addDoc(collection(db, "waitlist"), {
+    // 📝 अगर नया ईमेल है, तो ईमेल को ही ID बनाकर डेटा सेव करें
+    await setDoc(docRef, {
       email: emailValue,
       timestamp: serverTimestamp()
     });
@@ -56,7 +55,7 @@ form.addEventListener('submit', async (e) => {
     form.reset();
 
   } catch (error) {
-    console.error("Error checking or adding document: ", error);
+    console.error("Error configuration: ", error);
     msg.innerText = "ओह! कुछ गड़बड़ हुई। कृपया दोबारा प्रयास करें।";
     msg.className = "mt-3 text-sm font-semibold text-red-600 text-center block";
     msg.classList.remove('hidden');
